@@ -14,13 +14,113 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      leaderboard: {
+        Row: {
+          games: number
+          name: string
+          points: number
+          updated_at: string
+          wins: number
+        }
+        Insert: {
+          games?: number
+          name: string
+          points?: number
+          updated_at?: string
+          wins?: number
+        }
+        Update: {
+          games?: number
+          name?: string
+          points?: number
+          updated_at?: string
+          wins?: number
+        }
+        Relationships: []
+      }
+      ludo_players: {
+        Row: {
+          color: string
+          created_at: string
+          id: string
+          is_host: boolean
+          name: string
+          pieces: Json
+          room_code: string
+        }
+        Insert: {
+          color: string
+          created_at?: string
+          id?: string
+          is_host?: boolean
+          name: string
+          pieces?: Json
+          room_code: string
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          id?: string
+          is_host?: boolean
+          name?: string
+          pieces?: Json
+          room_code?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ludo_players_room_code_fkey"
+            columns: ["room_code"]
+            isOneToOne: false
+            referencedRelation: "ludo_rooms"
+            referencedColumns: ["code"]
+          },
+        ]
+      }
+      ludo_rooms: {
+        Row: {
+          code: string
+          created_at: string
+          current_turn: string
+          dice_rolled: boolean
+          dice_value: number | null
+          host_name: string
+          status: string
+          turn_started_at: string
+          winner_id: string | null
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          current_turn?: string
+          dice_rolled?: boolean
+          dice_value?: number | null
+          host_name: string
+          status?: string
+          turn_started_at?: string
+          winner_id?: string | null
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          current_turn?: string
+          dice_rolled?: boolean
+          dice_value?: number | null
+          host_name?: string
+          status?: string
+          turn_started_at?: string
+          winner_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      finish_game: {
+        Args: { p_room: string; p_winner: string }
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never
