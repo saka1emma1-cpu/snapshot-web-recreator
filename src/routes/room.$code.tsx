@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Board, colorVar } from "@/components/Board";
 import { COLORS, FINISH, applyMove, nextTurn, validMoves, type Color } from "@/lib/ludo";
 import { sfx } from "@/lib/sound";
+import { Coach } from "@/components/Coach";
 
 export const Route = createFileRoute("/room/$code")({
   head: ({ params }) => ({
@@ -174,7 +175,7 @@ function RoomPage() {
       <Board players={players.map((p) => ({ ...p, color: p.color as Color }))} movable={movable} shake={shake} onPick={(_, i) => move(me, i)} />
 
       <div className="fixed inset-x-0 bottom-0 border-t border-border bg-card/95 px-4 py-4 backdrop-blur">
-        <div className="mx-auto flex max-w-xl items-center gap-4">
+        <div className="mx-auto flex max-w-xl items-center gap-3">
           <motion.div
             animate={rolling ? { rotate: [0, 180, 360, 540, 720], scale: [1, 1.3, 1] } : { rotate: 0 }}
             transition={{ duration: 0.5 }}
@@ -182,6 +183,7 @@ function RoomPage() {
           >
             {room.dice_value ? FACES[room.dice_value - 1] : "🎲"}
           </motion.div>
+          <Coach me={me} players={players} dice={room.dice_value} diceRolled={room.dice_rolled} />
           <div className="flex-1">
             <p className="text-sm text-muted-foreground">
               {isMyTurn ? (room.dice_rolled ? (movable.size ? "Tap a glowing piece" : "No moves…") : "Your turn!") : `${current?.name ?? "…"}'s turn`}
