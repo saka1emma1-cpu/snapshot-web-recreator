@@ -47,8 +47,8 @@ export function piecePos(color: Color, step: number, idx: number): [number, numb
     return [r + 1.5 + (idx >> 1) * 2, c + 1.5 + (idx & 1) * 2];
   }
   if (step >= FINISH) return CENTER[color];
-  if (step >= 52) return STRETCH[color][step - 52];
-  return PATH[absIndex(color, step)!];
+  if (step >= 52) return STRETCH[color][step - 52]!;
+  return PATH[absIndex(color, step)!]!;
 }
 
 export function canMove(step: number, dice: number): boolean {
@@ -72,7 +72,7 @@ export interface MoveResult {
 
 export function applyMove(me: PlayerState, others: PlayerState[], pieceIdx: number, dice: number): MoveResult {
   const pieces = [...me.pieces];
-  const cur = pieces[pieceIdx];
+  const cur = pieces[pieceIdx]!;
   const next = cur === 0 ? 1 : cur + dice;
   pieces[pieceIdx] = next;
   const captured: MoveResult["captured"] = [];
@@ -95,7 +95,7 @@ export function applyMove(me: PlayerState, others: PlayerState[], pieceIdx: numb
 export function nextTurn(current: Color, active: Color[]): Color {
   const order = COLORS.filter((c) => active.includes(c));
   const i = order.indexOf(current);
-  return order[(i + 1) % order.length];
+  return order[(i + 1) % order.length]!;
 }
 
 export function makeCode(): string {

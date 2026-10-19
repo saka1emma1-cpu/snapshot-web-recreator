@@ -47,7 +47,7 @@ function RoomPage() {
     // sounds on diff
     const prev = prevPlayers.current;
     if (prev.length) {
-      const captured = list.some((p) => { const o = prev.find((x) => x.id === p.id); return o && p.pieces.some((s, i) => s === 0 && o.pieces[i] > 0); });
+      const captured = list.some((p) => { const o = prev.find((x) => x.id === p.id); return o && p.pieces.some((s, i) => s === 0 && (o.pieces[i] ?? 0) > 0); });
       const moved = list.some((p) => { const o = prev.find((x) => x.id === p.id); return o && JSON.stringify(o.pieces) !== JSON.stringify(p.pieces); });
       if (captured) { sfx.capture(); setShake((s) => s + 1); } else if (moved) sfx.move();
     }
@@ -120,7 +120,7 @@ function RoomPage() {
     if (!room.dice_rolled) roll(current);
     else if (room.dice_value) {
       const vm = validMoves(current.pieces, room.dice_value);
-      if (vm.length) move(current, vm[0]); else passTurn(current.color as Color);
+      if (vm.length) move(current, vm[0]!); else passTurn(current.color as Color);
     }
   }, [now]); // eslint-disable-line react-hooks/exhaustive-deps
 
