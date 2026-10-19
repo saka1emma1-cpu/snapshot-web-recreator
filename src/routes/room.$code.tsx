@@ -204,7 +204,7 @@ function Center({ children }: { children: React.ReactNode }) {
 function JoinForm({ code, players, onJoined }: { code: string; players: Player[]; onJoined: (id: string) => void }) {
   const [name, setName] = useState("");
   const [err, setErr] = useState("");
-  useEffect(() => setName(localStorage.getItem("yara:name") ?? ""), []);
+  useEffect(() => setName((n) => n || (localStorage.getItem("yara:name") ?? "")), []);
   const free = COLORS.filter((c) => !players.some((p) => p.color === c));
   async function join() {
     if (!name.trim()) return setErr("Enter your name");
