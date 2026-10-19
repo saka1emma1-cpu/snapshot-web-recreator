@@ -210,7 +210,7 @@ function JoinForm({ code, players, onJoined }: { code: string; players: Player[]
     if (!name.trim()) return setErr("Enter your name");
     if (!free.length) return setErr("Room is full (4 players)");
     localStorage.setItem("yara:name", name.trim());
-    const { data, error } = await supabase.from("ludo_players").insert({ room_code: code, name: name.trim(), color: free[0] }).select().single();
+    const { data, error } = await supabase.from("ludo_players").insert({ room_code: code, name: name.trim(), color: free[0]! }).select().single();
     if (error || !data) return setErr("Couldn't join — try again.");
     localStorage.setItem(`yara:player:${code}`, data.id);
     onJoined(data.id);
