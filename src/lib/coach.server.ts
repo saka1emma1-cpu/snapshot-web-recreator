@@ -34,7 +34,8 @@ export async function askCoach(position: string, question: string): Promise<stri
     },
     onError: ({ error }) => { failure = error; },
   });
-  const text = await result.text.catch((e) => { failure ??= e; return ""; });
+  let text = "";
+  try { text = await result.text; } catch (e) { failure ??= e; }
   if (failure || !text.trim()) {
     const status = (failure as { statusCode?: number })?.statusCode;
     console.error("coach error", status, failure);
