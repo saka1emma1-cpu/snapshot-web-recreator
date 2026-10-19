@@ -24,7 +24,7 @@ function Home() {
   const [code, setCode] = useState("");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
-  useEffect(() => setName(localStorage.getItem("yara:name") ?? ""), []);
+  useEffect(() => setName((n) => n || (localStorage.getItem("yara:name") ?? "")), []);
 
   async function create() {
     if (!name.trim()) return setErr("Enter your name first");

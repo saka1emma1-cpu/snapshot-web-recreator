@@ -19,7 +19,7 @@ describe("ludo rules", () => {
   it("capture sends opponent home and grants extra turn", () => {
     // red step 3 -> abs 2; green at abs 2 = step 42
     const r = applyMove({ id: "r", color: "red", pieces: [1, 0, 0, 0] }, [{ id: "g", color: "green", pieces: [42, 0, 0, 0] }], 0, 2);
-    expect(r.captured[0].pieces[0]).toBe(0);
+    expect(r.captured[0]!.pieces[0]).toBe(0);
     expect(r.extraTurn).toBe(true);
   });
   it("no capture on safe star", () => {

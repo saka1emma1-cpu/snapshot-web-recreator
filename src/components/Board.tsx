@@ -53,7 +53,7 @@ export function Board({ players, movable, onPick, shake }: {
         )),
       )}
       <div className="absolute" style={{ top: pct(6), left: pct(6), width: pct(3), height: pct(3),
-        background: `conic-gradient(from 45deg, ${colorVar.green} 0 25%, ${colorVar.blue} 0 50%, ${colorVar.yellow} 0 75%, ${colorVar.red} 0)` }} />
+        background: `conic-gradient(from 45deg, ${colorVar.blue} 0 25%, ${colorVar.yellow} 0 50%, ${colorVar.red} 0 75%, ${colorVar.green} 0)` }} />
       {tokens.map(({ p, i, r, c, n, s }) => {
         const can = movable.has(`${p.id}:${i}`);
         const off = n * 0.18;
