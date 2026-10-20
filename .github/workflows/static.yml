@@ -18,17 +18,16 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20.19.0
-      - name: Install
-        run: |
-          npm cache clean --force
-          rm -rf package-lock.json node_modules
-          npm install --legacy-peer-deps
-      - name: Build
-        run: npm run build
+      - run: npm cache clean --force
+      - run: rm -rf package-lock.json node_modules
+      - run: npm install --legacy-peer-deps
+      - run: npm run build
+      - run: ls -la
+      - run: ls -la .output/public || ls -la dist || ls -la build
       - uses: actions/configure-pages@v4
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: .output/public
   deploy:
     needs: build
     runs-on: ubuntu-latest
