@@ -17,10 +17,11 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 18
-      - name: Clean install
+          node-version: 20.19.0
+      - name: Install
         run: |
-          rm -rf node_modules package-lock.json
+          npm cache clean --force
+          rm -rf package-lock.json node_modules
           npm install --legacy-peer-deps
       - name: Build
         run: npm run build
