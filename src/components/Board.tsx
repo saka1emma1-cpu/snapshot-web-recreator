@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useEffect } from "react";
 import { PATH, STRETCH, SAFE, START, piecePos, type Color } from "@/lib/ludo";
 
 export interface BoardPlayer { id: string; color: Color; pieces: number[]; name: string }
@@ -9,11 +10,51 @@ const colorVar: Record<Color, string> = {
 const bases: [Color, number, number][] = [["red", 0, 0], ["green", 0, 9], ["blue", 9, 9], ["yellow", 9, 0]];
 const pct = (n: number) => `${(n / 15) * 100}%`;
 
-export function Board({ players, movable, onPick, shake }: {
-  players: BoardPlayer[]; movable: Set<string>; onPick: (playerId: string, idx: number) => void; shake: number;
+// WINNER CHECK: all 4 pieces at home (57)
+export const isWinner = (player: BoardPlayer) => player.pieces.every(pos => pos === 57);
+
+export function Board({ players, movable, onPick, shake, onWin }: {
+  players: BoardPlayer[]; movable: Set<string>; onPick: (playerId: string, idx: number) => void; shake: number; onWin?: (p: BoardPlayer) => void;
 }) {
+  // AUTO DETECT WINNER AND SAVE FOR ADMIN
+  useEffect(() => {
+    for (const p of players) {
+      if (isWinner(p)) {
+        // Avoid duplicate alerts
+        const last = localStorage.getItem("yara_last_winner_time");
+        const now = Date.now();
+        if (last && now - parseInt(last) < 5000) return;
+
+        localStorage.setItem("yara_last_winner", p.name);
+        localStorage.setItem("yara_last_winner_color", p.color);
+        localStorage.setItem("yara_last_winner_time", now.toString());
+        localStorage.setItem("yara_last_winner_id", p.id);
+
+        const isPaid = localStorage.getItem("yara_paid_status") === "confirmed";
+        
+        if (isPaid) {
+          const winData = {
+            name: p.name,
+            color: p.color,
+            id: p.id,
+            time: new Date().toLocaleString(),
+            pot: 2000,
+            winnerGets: 1600,
+            hostGets: 400,
+            hostAccount: "8066316416 Opay SAKA EMMANUEL"
+          };
+          const history = JSON.parse(localStorage.getItem("yara_winners_history") || "[]");
+          history.push(winData);
+          localStorage.setItem("yara_winners_history", JSON.stringify(history));
+        }
+
+        if (onWin) onWin(p);
+        break;
+      }
+    }
+  }, [players, onWin]);
+
   const startCells = new Map(Object.entries(START).map(([c, i]) => [i, c as Color]));
-  // stack offsets for tokens sharing a cell
   const counts = new Map<string, number>();
   const tokens = players.flatMap((p) =>
     p.pieces.map((s, i) => {
