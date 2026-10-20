@@ -22,16 +22,32 @@ jobs:
       - run: rm -rf package-lock.json node_modules
       - run: npm install --legacy-peer-deps
       - run: npm run build
-      - name: Find built files
+      - name: Create index.html for GitHub Pages
         run: |
-          ls -la
-          ls -la .output || true
-          ls -la .output/public || true
-          find .output -name "index.html" -type f | head -20 || true
-          find dist -name "index.html" -type f | head -20 || true
+          ls -la .output/public/
+          CLIENT=$(ls .output/public/assets/client-*.js 2>/dev/null | head -1 | xargs -n1 basename)
+          echo "Found client: $CLIENT"
+          cat > .output/public/index.html <<EOF
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            <title>YARA LUDO ONDO</title>
+            <base href="/snapshot-web-recreator/" />
+          </head>
+          <body>
+            <div id="root"></div>
+            <script type="module">
+              import "/snapshot-web-recreator/assets/${CLIENT}"
+            </script>
+          </body>
+          </html>
+          EOF
+          cat .output/public/index.html
+          ls -la .output/public/
       - uses: actions/configure-pages@v4
-      - name: Upload artifact - try .output/public first
-        uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v3
         with:
           path: .output/public
   deploy:
